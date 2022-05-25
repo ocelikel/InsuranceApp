@@ -1,0 +1,71 @@
+Projede kullanýlan teknolojiler ve tasarým kalýplarý
+
+.net 5
+MassTransit/RabbitMq/Saga State Machine/Redis
+SignalR
+CQRS pattern
+Asp.Net Core MVC
+Asp.Net Web Api
+
+-Projede client tarafýndan bilgiler alýnýp backendde asenkron olarak sigorta firmalarýna iletilir.
+Teklifler hazýrlandýðýnda clienta SignalR ile iletilir.
+-Alternatif olarak Signalr yerine clienta teklif iletimi için ajax poll altyapýsý için backendde apiler yazýlmýþ ve saga state machine configürasyonu yapýlmýþtýr.
+
+-Teklif için sorgulama yapýldýðýnda asenkronluðu göstermek için server tarafýnda 15sn'lik bir Delay eklenmiþtir.
+
+Projeyi kaldýrmak için ilk olarak dockerda rabbitmq ve redis ayaða kaldýrýlmalý.
+Projeyi localden çalýþtýrmak için
+InsuranceCompanyWebApi => Start without debugging
+Insurance.WebApi => Start without debugging
+Insurance.MVCApp => Start
+
+þeklinde ayaða kaldýrýlabilir.
+
+Db için MSSQL de InsuranceDb db'si oluþturuldu.Tablo scripti.
+
+
+---------------------------------------------------
+
+USE [InsuranceDb]
+GO
+/****** Object:  Table [dbo].[Offer]    Script Date: 25.05.2022 12:21:06 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Offer](
+	[Id] [uniqueidentifier] NOT NULL,
+	[ProcessId] [uniqueidentifier] NULL,
+	[IdentityNumber] [nvarchar](11) NULL,
+	[CompanyName] [nvarchar](500) NULL,
+	[CompanyLogo] [nvarchar](500) NULL,
+	[Description] [nvarchar](max) NULL,
+	[Price] [decimal](18, 2) NULL,
+	[Plate] [nvarchar](20) NULL,
+	[OfferDate] [datetime] NULL,
+ CONSTRAINT [PK_Offer] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[UserInsurance]    Script Date: 25.05.2022 12:21:07 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserInsurance](
+	[Id] [uniqueidentifier] NOT NULL,
+	[Plate] [nvarchar](20) NULL,
+	[IdentityNumber] [nvarchar](11) NULL,
+	[LicenseSerialCode] [nvarchar](25) NULL,
+	[LicenseSerialNo] [nvarchar](25) NULL,
+ CONSTRAINT [PK_UserInsurance] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+

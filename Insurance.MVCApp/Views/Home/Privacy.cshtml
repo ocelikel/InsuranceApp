@@ -1,0 +1,44 @@
+﻿
+  
+    
+
+<div>
+    <div id="get-offer" data-request-url="@Url.Action("GetOffer","Home")"></div>
+    <div id="get-user-info" data-request-url="@Url.Action("GetUserInfo","Home")"></div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="IdTckn">TCKN</label>
+                <input type="text" class="form-control" id="IdTckn" maxlength="11" placeholder="TCKN giriniz..">
+            </div>
+            <button type="button" onclick="getUserOfferHistory()" class="btn btn-primary">Ara</button>
+        </div>
+    </div>
+    <div class="row">
+         <div class="col-md-12">
+     <table id="offerTable" class="display" width="100%">
+        <thead>
+            <tr>
+                <th>CompanyName</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Plate</th>
+                <th>OfferDate</th>
+            </tr>
+        </thead>
+    </table>
+    </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />  
+    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" /> 
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/offer.js"></script>
+}
