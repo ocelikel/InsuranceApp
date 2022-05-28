@@ -60,27 +60,32 @@ namespace Insurance.WebApi
             services.AddScoped(typeof(IQueryHandler<GetUserInfoQuery, UserInformationRequest>), typeof(GetUserInfoQueryHandler));
             
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-            services.AddScoped<IContext>(f => { return new InsuranceContext("Server = (localdb)\\MSSQLLocalDB; Database = InsuranceDb; Trusted_Connection = True; "); });
+            services.AddScoped<IContext>(f => { return new InsuranceContext(Configuration["ConnectionStrings:InsuranceConnectionString"]); });
             
             services.AddCors();
-            services.AddSignalR();
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(3);
+                hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(6);
+            });
 
             services.AddMassTransit(x =>
             {
-                x.AddSignalRHub<OfferHub>(cfg => {/*Configure hub lifetime manager*/});
+                //x.AddSignalRHub<OfferHub>(cfg => {
+                //    cfg.RequestTimeout = TimeSpan.FromSeconds(120000);
+                //});
                 x.AddConsumer<GetInsuranceOfferConsumer>();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    string rabbitmqConnectionString = Configuration["RabbitMqConnectionString"];
-                    cfg.Host(rabbitmqConnectionString);
+                    cfg.Host(Configuration["RabbitMqSettings:RabbitMqConnectionString"]);
                     cfg.ConfigureEndpoints(context);
                 });
 
-                const string redisConfigurationString = "127.0.0.1";
                 x.AddSagaStateMachine<GetOfferProcessStateMachine, GetOfferProcessState>(typeof(GetOfferProcessStateMachineDefinition))
                    .RedisRepository(r =>
                    {
-                       r.DatabaseConfiguration(redisConfigurationString);
+                       r.DatabaseConfiguration(Configuration["RedisSettings:RedisConnectionString"]);
 
                        r.ConcurrencyMode = ConcurrencyMode.Optimistic;
                    });
@@ -107,7 +112,7 @@ namespace Insurance.WebApi
         {
             app.UseCors(builder =>
             {
-                builder.WithOrigins("https://localhost:44366")
+                builder.WithOrigins("http://localhost:8002")
                     .AllowAnyHeader()
                     .WithMethods("GET", "POST")
                     .AllowCredentials();
@@ -120,7 +125,7 @@ namespace Insurance.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insurance.WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

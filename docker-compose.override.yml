@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  insurancedb:
+    container_name: insurancedb
+    environment:
+        SA_PASSWORD: "Ee.030910501."
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1433:1433"
+  sagastatedb:
+    container_name: sagastatedb
+    restart: always    
+    ports:
+      - "6379:6379"
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  insurancecompanywebapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8001:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  insurance.webapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:InsuranceConnectionString=Server=insurancedb;Database=InsuranceDb;User Id=sa;Password=Ee.030910501."
+      - "RabbitMqSettings:RabbitMqConnectionString=amqp://guest:guest@rabbitmq:5672"
+      - "RedisSettings:RedisConnectionString=sagastatedb:6379"
+    depends_on:
+      - insurancedb
+      - rabbitmq
+      - sagastatedb
+    ports:
+      - "8000:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  insurance.mvcapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - insurance.webapi
+    ports:
+     - "8002:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

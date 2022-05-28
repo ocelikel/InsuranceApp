@@ -19,7 +19,7 @@ namespace InsuranceQueue.Consumers
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly ILogger<GetInsuranceOfferConsumer> _logger;
         private readonly ICreateUserOfferService createofferService;
-        private const string basePath= "https://localhost:44331/api/offer";
+        private const string basePath= "http://host.docker.internal:8001/api/offer";
         public GetInsuranceOfferConsumer(IPublishEndpoint publishEndpoint,
                                  ILogger<GetInsuranceOfferConsumer> logger,
                                  ICreateUserOfferService createofferService,

@@ -16,11 +16,11 @@
             </div>
             <div class="form-group">
                 <label for="IdSerialCode">Ruhsat Seri Kodu</label>
-                <input type="text" class="form-control" id="IdSerialCode" placeholder="Ruhsat Seri Kodu Giriniz..">
+                <input type="text" class="form-control" id="IdSerialCode" placeholder="Ruhsat Seri Kodu giriniz..">
             </div>
             <div class="form-group">
                 <label for="IdSerialNo">Ruhsat Seri No</label>
-                <input type="text" class="form-control" id="IdSerialNo" placeholder="Ruhsat Seri No yazınız..">
+                <input type="text" class="form-control" id="IdSerialNo" placeholder="Ruhsat Seri No giriniz..">
             </div>
             <button type="button" onclick="getOffer()" class="btn btn-primary">Teklif Al</button>
         </div>
@@ -28,21 +28,23 @@
 
       <div class="row">
          <div class="col-md-12">
-     <table id="offerQueryTable" class="display" width="100%">
-        <thead>
-            <tr>
-               @* <th>ProcessId</th>
-                <th>IdentityNumber</th>*@
-                <th>CompanyName</th>
-                @*<th>CompanyLogo</th>*@
-                <th>Description</th>
-                <th>Price</th>
-                <th>Plate</th>
-                <th>OfferDate</th>
-            </tr>
-        </thead>
-    </table>
-    </div>
+                 @*<div class="text-center">
+                  <div id="spinnerdiv" class="spinner-border" role="status" style="display:none;">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>*@
+             <table id="offerQueryTable" class="display" width="100%">
+                <thead>
+                    <tr>
+                        <th>CompanyName</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Plate</th>
+                        <th>OfferDate</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 
 </div>

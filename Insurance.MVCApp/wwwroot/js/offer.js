@@ -1,11 +1,11 @@
 ﻿
-
-var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44379/offerHub",).build();
-
+var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:8000/offerHub",).build();
+connection.keepAliveIntervalInMilliseconds = 1000 * 60 * 3; // 3 min
+connection.serverTimeoutInMilliseconds = 1000 * 60 * 6; // 6 min
 connection.start().then(res => console.log('Hub bağlantısı başarılı')).catch(err => console.log('Huba bağlanırken hata oluştu!'));
 
 connection.on("SEND_OFFER", function (message) {
-    
+    //$('#spinnerdiv').hide();
     populateTable(message.toString());
 });
 
@@ -27,7 +27,7 @@ $(document).ready(function () {
 function getUserInfo() {
     $.ajax({
         type: "GET",
-        url: 'https://localhost:44379/api/Insurance/User?Plate=' + $("#IdPlate").val() + '&IdentityNumber=' + $("#IdTckn").val(),
+        url: 'http://localhost:8000/api/Insurance/User?Plate=' + $("#IdPlate").val() + '&IdentityNumber=' + $("#IdTckn").val(),
         success: function (result) {
             if (result) {
                 console.log(result)
@@ -44,8 +44,8 @@ function getUserInfo() {
 function getOffer() {
 
     var postModel = {
-        Plate: $("#IdTckn").val(),
-        IdentityNumber: $("#IdPlate").val(),
+        Plate: $("#IdPlate").val(),
+        IdentityNumber: $("#IdTckn").val(),
         LicenseSerialCode: $("#IdSerialCode").val(),
         LicenseSerialNo: $("#IdSerialNo").val()
     }
@@ -53,7 +53,7 @@ function getOffer() {
     $.ajax({
         type: 'POST',
         dataType: "json",
-        url: 'https://localhost:44379/api/Insurance/Offer',
+        url: 'http://localhost:8000/api/Insurance/Offer',
         data: JSON.stringify(postModel),
         headers: {
             'Accept': 'application/json',
@@ -62,6 +62,7 @@ function getOffer() {
         success: function (result) {
             if (result) {
                 if (!result.success) {
+                    //$('#spinnerdiv').show();
                     alert("Teklif Hazırlanıyor.");
                 } else {
                     alert("Teklif hazırlanırken hata oluştu");
@@ -80,7 +81,7 @@ function getOffer() {
 function checkOfferStatus(result) {
     $.ajax({
         type: "Get",
-        url: 'https://localhost:44379/api/Insurance/Offer/Process/' + result.processId,
+        url: 'http://localhost:8000/api/Insurance/Offer/Process/' + result.processId,
         success: function (res) {
             if (res) {
                 console.log('Api isteği başarılı');
@@ -90,23 +91,6 @@ function checkOfferStatus(result) {
         }
     });
 }
-
-function getUserOffer2() {
-    
-    $.ajax({
-        type: "Get",
-        url: 'https://localhost:44379/api/Insurance/Offers/' + $("#IdTckn").val(),
-        success: function (result) {
-            if (result) {
-                console.log(result);
-                //getUserOffer2();
-            } else {
-                alert('hata');
-            }
-        }
-    });
-}
-
 
 function getUserOfferHistory() {
 
@@ -126,7 +110,7 @@ function getUserOfferHistory() {
             ],
             ajax: {
                 'type': "Get",
-                'url': 'https://localhost:44379/api/Insurance/Offers/' + $("#IdTckn").val(),
+                'url': 'http://localhost:8000/api/Insurance/Offers/' + $("#IdTckn").val(),
                 "dataSrc": ''
             },
             "columnDefs": [

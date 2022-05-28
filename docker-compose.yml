@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  insurancedb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+
+  sagastatedb:
+    image: redis:alpine
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+
+  insurancecompanywebapi:
+    image: ${DOCKER_REGISTRY-}insurancecompanywebapi
+    build:
+      context: .
+      dockerfile: InsuranceCompanyWebApi/Dockerfile
+
+  insurance.webapi:
+    image: ${DOCKER_REGISTRY-}insurancewebapi
+    build:
+      context: .
+      dockerfile: Insurance.WebApi/Dockerfile
+
+
+  insurance.mvcapp:
+    image: ${DOCKER_REGISTRY-}insurancemvcapp
+    build:
+      context: .
+      dockerfile: Insurance.MVCApp/Dockerfile
+
